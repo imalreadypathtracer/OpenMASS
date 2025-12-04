@@ -2,7 +2,7 @@ OpenMASS (Open Mass Analysis Software Suite) v2025r
 Copyright (c) Maximilian Wills 2024-2025
 
 OpenMASS is an open-source mass photometry analysis package for landing assays
-and single-particle-tracking (SPT) and was written at the Univeristy of Leicester
+and single-particle-tracking (SPT) and was written at the University of Leicester
 for analysing time series dynamics of single-molecules from mass photometry data.
 
 This software is made avalailable under the GNU GPLv3 Licence.
