@@ -1,1 +1,1 @@
-pyinstaller OpenMASS.py --icon="luxmp_logo.ico" --exclude-module PyQt5
+pyinstaller OpenMASS.py --icon="icons/luxmp_logo.ico" --exclude-module PyQt5 --hidden-import=matplotlib.backends.backend_svg

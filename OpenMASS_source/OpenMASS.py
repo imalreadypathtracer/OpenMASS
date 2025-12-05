@@ -7659,30 +7659,48 @@ class DriftCorrectionWin:
 
     def detect_drift(self):
         shape = np.shape(self.native_stack)
-        self.initial_spots = iscam.find_events(view=0, img_array=self.initial, mode=True,
-                                               threshold=1.2,
-                                               averaging_dist=2,
-                                               gauss_fit_residual_threshold=8,
-                                               min_sigma_threshold=0.6,
-                                               max_sigma_threshold=2.5,
-                                               min_intensity=1,
-                                               eccentricity_threshold=0.7,
-                                               true_gauss_threshold=4,
-                                               region=[[0, 0], [self.resolution[1], self.resolution[0]]],
-                                               inverted=False
-                                               )
-        self.final_spots = iscam.find_events(view=0, img_array=self.final, mode=True,
-                                             threshold=1.2,
-                                             averaging_dist=2,
-                                             gauss_fit_residual_threshold=8,
-                                             min_sigma_threshold=0.6,
-                                             max_sigma_threshold=2.5,
-                                             min_intensity=1,
-                                             eccentricity_threshold=0.7,
-                                             true_gauss_threshold=4,
-                                             region=[[0, 0], [self.resolution[1], self.resolution[0]]],
-                                             inverted=False
-                                             )
+        init_events = foci_detection.detect_and_fit_gaussian_optimized(self.initial, threshold=np.mean(self.initial) * 0.5)
+        self.initial_spots = foci_detection.filter_results(init_events,
+                                                        imgx=self.resolution[0],
+                                                        imgy=self.resolution[1],
+                                                        min_sigma=0.5,
+                                                        max_sigma=2.5,
+                                                        ecc_thresh=0.5,
+                                                        min_dist=4,
+                                                        )
+        fin_events = foci_detection.detect_and_fit_gaussian_optimized(self.final, threshold=np.mean(self.final) * 0.5)
+        self.final_spots = foci_detection.filter_results(fin_events,
+                                                           imgx=self.resolution[0],
+                                                           imgy=self.resolution[1],
+                                                           min_sigma=0.5,
+                                                           max_sigma=2.5,
+                                                           ecc_thresh=0.5,
+                                                           min_dist=4,
+                                                           )
+        # self.initial_spots = iscam.find_events(view=0, img_array=self.initial, mode=True,
+        #                                        threshold=1.2,
+        #                                        averaging_dist=2,
+        #                                        gauss_fit_residual_threshold=8,
+        #                                        min_sigma_threshold=0.6,
+        #                                        max_sigma_threshold=2.5,
+        #                                        min_intensity=1,
+        #                                        eccentricity_threshold=0.7,
+        #                                        true_gauss_threshold=4,
+        #                                        region=[[0, 0], [self.resolution[1], self.resolution[0]]],
+        #                                        inverted=False
+        #                                        )
+        # self.final_spots = iscam.find_events(view=0, img_array=self.final, mode=True,
+        #                                      threshold=1.2,
+        #                                      averaging_dist=2,
+        #                                      gauss_fit_residual_threshold=8,
+        #                                      min_sigma_threshold=0.6,
+        #                                      max_sigma_threshold=2.5,
+        #                                      min_intensity=1,
+        #                                      eccentricity_threshold=0.7,
+        #                                      true_gauss_threshold=4,
+        #                                      region=[[0, 0], [self.resolution[1], self.resolution[0]]],
+        #                                      inverted=False
+        #                                      )
         for i in range(len(self.initial_spots)):
             coords = self.initial_spots
             c = plt.Circle((coords[i][0], coords[i][1]), 4, fill=False, color="white")
